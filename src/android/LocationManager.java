@@ -22,6 +22,10 @@ import java.security.InvalidKeyException;
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Calendar;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -60,11 +64,12 @@ import android.util.Log;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class LocationManager extends CordovaPlugin implements BeaconConsumer {
-	
+	private AlarmManager alarm;
     public static final String TAG = "com.unarin.cordova.beacon";
     private static int CDV_LOCATION_MANAGER_DOM_DELEGATE_TIMEOUT = 30;
     
     private BeaconManager iBeaconManager;
+	private BeaconConsumer consumer;
     private BlockingQueue<Runnable> queue;
     private PausableThreadPoolExecutor threadPoolExecutor;
     
@@ -74,13 +79,15 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
     //listener for changes in state for system Bluetooth service
 	private BroadcastReceiver broadcastReceiver; 
 	private BluetoothAdapter bluetoothAdapter;
-
+	private beaconUtill = new BeaconServiceUtility(this);
 
     /**
      * Constructor.
      */
-    public LocationManager() {
-    }
+		
+	 public LocationManager() {}
+
+		
 
     /**
      * Sets the context of the Command. This can then be used to do things like
@@ -116,14 +123,17 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
     	
     	if (broadcastReceiver != null) {
     		cordova.getActivity().unregisterReceiver(broadcastReceiver);
-			this.cordova.getActivity().startService(beaconConsumer);
+						this.cordova.getActivity().startService(new Intent(this, LocationManager.class));
+
     		broadcastReceiver = null;
     	}
     	
     	super.onDestroy(); 
     }
+	
 
-
+	
+    
     
 	//////////////// PLUGIN ENTRY POINT /////////////////////////////
     /**
@@ -137,7 +147,8 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
         if (action.equals("onDomDelegateReady")) {
         	onDomDelegateReady(callbackContext);
-        } else if (action.equals("disableDebugNotifications")) {
+        } 
+		else if (action.equals("disableDebugNotifications")) {
         	disableDebugNotifications(callbackContext);
         } else if (action.equals("enableDebugNotifications")) {
         	enableDebugNotifications(callbackContext);
@@ -194,7 +205,7 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
     }
 
 	///////////////// SETUP AND VALIDATION /////////////////////////////////
-    
+
     private void initLocationManager() {
         iBeaconManager = BeaconManager.getInstanceForApplication(cordova.getActivity());
         iBeaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
@@ -682,6 +693,9 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
 					result.setKeepCallback(true);
 					beaconServiceNotifier.didStartMonitoringForRegion(region);
 					return result;
+					
+					
+					
 					
 				} catch (RemoteException e) {   
 		        	Log.e(TAG, "'startMonitoringForRegion' service error: " + e.getCause());
