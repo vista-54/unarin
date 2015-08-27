@@ -123,7 +123,7 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
     	
     	if (broadcastReceiver != null) {
     		cordova.getActivity().unregisterReceiver(broadcastReceiver);
-						this.cordova.getActivity().startService(new Intent(this, LocationManager.class));
+						this.cordova.getActivity().startService();
 
     		broadcastReceiver = null;
     	}
