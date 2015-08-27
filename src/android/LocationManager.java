@@ -79,7 +79,7 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
     //listener for changes in state for system Bluetooth service
 	private BroadcastReceiver broadcastReceiver; 
 	private BluetoothAdapter bluetoothAdapter;
-	private beaconUtill = new BeaconServiceUtility(this);
+	
 
     /**
      * Constructor.
