@@ -119,7 +119,7 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
      */ 
     @Override
     public void onDestroy() {
-    	iBeaconManager.unbind(this);
+    	//iBeaconManager.unbind(this);
     	
     	if (broadcastReceiver != null) {
     		cordova.getActivity().unregisterReceiver(broadcastReceiver);
