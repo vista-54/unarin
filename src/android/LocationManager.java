@@ -1304,7 +1304,7 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
 	@Override
 	public void unbindService(ServiceConnection connection) {
 		debugLog("Unbind from IBeacon service");
-		cordova.getActivity().unbindService(connection);
+		/*cordova.getActivity().unbindService(connection);*/
 	}
 
 	@Override
